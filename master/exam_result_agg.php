@@ -1,67 +1,134 @@
 <?php
-// Simple admin page to view aggregated exam results and export CSV
+// Admin page to view aggregated exam results
 include('header.php');
 
 $exam_id = isset($_GET['exam_id']) ? intval($_GET['exam_id']) : 0;
-$export = isset($_GET['export']) ? 1 : 0;
 
-// If export requested, stream CSV for chosen exam
-if ($export && $exam_id > 0) {
-    $sql = "SELECT r.*, u.user_name, u.user_image, oe.online_exam_title
-            FROM user_exam_result r
-            JOIN user_table u ON u.user_id = r.user_id
-            LEFT JOIN online_exam_table oe ON oe.online_exam_id = r.exam_id
-            WHERE r.exam_id = :exam_id
-            ORDER BY r.total_mark DESC, r.percentage DESC";
-    $stmt = $exam->connect->prepare($sql);
-    $stmt->execute([':exam_id' => $exam_id]);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename=exam_' . $exam_id . '_results.csv');
-    $out = fopen('php://output', 'w');
-    fputcsv($out, ['Exam ID','Exam Title','User ID','User Name','Attendance','Total Mark','Total Possible','Percentage','Updated On']);
-    foreach ($rows as $r) {
-        fputcsv($out, [
-            $r['exam_id'],
-            $r['online_exam_title'],
-            $r['user_id'],
-            $r['user_name'],
-            $r['attendance_status'],
-            $r['total_mark'],
-            $r['total_possible'],
-            $r['percentage'],
-            $r['updated_on']
-        ]);
+// If no exam_id provided, fetch the first available exam
+if ($exam_id == 0) {
+    $estmt = $exam->connect->prepare("SELECT online_exam_id FROM online_exam_table LIMIT 1");
+    $estmt->execute();
+    $first_exam = $estmt->fetchColumn();
+    if ($first_exam) {
+        $exam_id = intval($first_exam);
     }
-    fclose($out);
-    exit;
 }
 
 // Fetch aggregated rows for display if exam selected
 $rows = [];
 $exam_title = '';
 if ($exam_id > 0) {
-    $sql = "SELECT r.*, u.user_name, u.user_image, oe.online_exam_title
-            FROM user_exam_result r
-            JOIN user_table u ON u.user_id = r.user_id
-            LEFT JOIN online_exam_table oe ON oe.online_exam_id = r.exam_id
-            WHERE r.exam_id = :exam_id
-            ORDER BY r.total_mark DESC, r.percentage DESC";
-    $stmt = $exam->connect->prepare($sql);
-    $stmt->execute([':exam_id' => $exam_id]);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // We'll compute aggregates in PHP (same algorithm as CSV) so the admin sees detailed per-user info.
+    $tstmt = $exam->connect->prepare("SELECT online_exam_title, marks_per_right_answer FROM online_exam_table WHERE online_exam_id = :eid");
+    $tstmt->execute([':eid' => $exam_id]);
+    $tmeta = $tstmt->fetch(PDO::FETCH_ASSOC);
+    $exam_title = $tmeta['online_exam_title'] ?? '';
+    $marks_per_right = floatval($tmeta['marks_per_right_answer'] ?? 0);
+
+    // Collect users who answered or enrolled
+    $ustmt = $exam->connect->prepare("SELECT DISTINCT user_id FROM user_exam_question_answer WHERE exam_id = :eid");
+    $ustmt->execute([':eid' => $exam_id]);
+    $user_rows = $ustmt->fetchAll(PDO::FETCH_COLUMN);
+    $est = $exam->connect->prepare("SELECT user_id, attendance_status FROM user_exam_enroll_table WHERE exam_id = :eid");
+    $est->execute([':eid' => $exam_id]);
+    $enrolled_rows = $est->fetchAll(PDO::FETCH_ASSOC);
+    $enrolled = array_column($enrolled_rows, 'user_id');
+
+    $user_ids = array_values(array_unique(array_merge($user_rows ?: [], $enrolled ?: [])));
+
+    // Precompute total possible
+    $qstmt = $exam->connect->prepare("SELECT COUNT(*) FROM question_table WHERE online_exam_id = :eid");
+    $qstmt->execute([':eid' => $exam_id]);
+    $total_questions = intval($qstmt->fetchColumn() ?? 0);
+    $total_possible = $total_questions * $marks_per_right;
+
+    foreach ($user_ids as $uid) {
+        $ust = $exam->connect->prepare("SELECT user_name, user_image FROM user_table WHERE user_id = :uid");
+        $ust->execute([':uid' => $uid]);
+        $u = $ust->fetch(PDO::FETCH_ASSOC) ?: ['user_name' => 'User ' . $uid, 'user_image' => ''];
+
+        $mstmt = $exam->connect->prepare("SELECT IFNULL(SUM(CAST(marks AS DECIMAL(10,2))),0) FROM user_exam_question_answer WHERE exam_id = :eid AND user_id = :uid");
+        $mstmt->execute([':eid' => $exam_id, ':uid' => $uid]);
+        $total_mark = floatval($mstmt->fetchColumn() ?? 0);
+
+        // attendance: prefer enrollment table value if present
+        $attendance = 'Absent';
+        foreach ($enrolled_rows as $er) {
+            if ($er['user_id'] == $uid) { $attendance = $er['attendance_status'] ?: 'Present'; break; }
+        }
+
+        $percentage = $total_possible > 0 ? round(($total_mark / $total_possible) * 100, 2) : 0;
+
+        $updated_on = '';
+        try {
+            $rst = $exam->connect->prepare("SELECT updated_on FROM user_exam_result WHERE exam_id = :eid AND user_id = :uid LIMIT 1");
+            $rst->execute([':eid' => $exam_id, ':uid' => $uid]);
+            $rrow = $rst->fetch(PDO::FETCH_ASSOC);
+            if ($rrow && !empty($rrow['updated_on'])) $updated_on = $rrow['updated_on'];
+        } catch (Exception $ex) {
+            // ignore
+        }
+
+        $rows[] = [
+            'exam_id' => $exam_id,
+            'online_exam_title' => $exam_title,
+            'user_id' => $uid,
+            'user_name' => $u['user_name'],
+            'user_image' => $u['user_image'],
+            'attendance_status' => $attendance,
+            'total_mark' => $total_mark,
+            'total_possible' => $total_possible,
+            'percentage' => $percentage,
+            'updated_on' => $updated_on
+        ];
+    }
+
+    // ========== Borda Count Rank Aggregation ==========
     if (count($rows) > 0) {
-        $exam_title = $rows[0]['online_exam_title'];
-    } else {
-        // Try to get title from online_exam_table even if no results yet
-        $tstmt = $exam->connect->prepare("SELECT online_exam_title FROM online_exam_table WHERE online_exam_id = :eid");
-        $tstmt->execute([':eid' => $exam_id]);
-        $trow = $tstmt->fetch(PDO::FETCH_ASSOC);
-        if ($trow) $exam_title = $trow['online_exam_title'];
+
+        // 1. Rank by percentage descending
+        $percentage_sorted = $rows;
+        usort($percentage_sorted, function($a, $b) {
+            return $b['percentage'] <=> $a['percentage']; // descending
+        });
+
+        // Assign ranks and Borda points (highest rank gets n points)
+        $n = count($percentage_sorted);
+        $percentage_points = [];
+        foreach ($percentage_sorted as $rank => $user) {
+            $percentage_points[$user['user_id']] = $n - $rank;
+        }
+
+        // 2. Rank by attendance (Present > Absent)
+        // Prepare attendance ranking: Present=1, Absent=2 (lower better)
+        $attendance_sorted = $rows;
+        usort($attendance_sorted, function($a, $b) {
+            $valA = strtolower($a['attendance_status']) === 'present' ? 1 : 2;
+            $valB = strtolower($b['attendance_status']) === 'present' ? 1 : 2;
+            return $valA <=> $valB; // ascending (present first)
+        });
+
+        // Assign Borda points for attendance
+        $attendance_points = [];
+        foreach ($attendance_sorted as $rank => $user) {
+            $attendance_points[$user['user_id']] = $n - $rank;
+        }
+
+        // 3. Sum points for each user
+        foreach ($rows as &$row) {
+            $uid = $row['user_id'];
+            $p_points = $percentage_points[$uid] ?? 0;
+            $a_points = $attendance_points[$uid] ?? 0;
+            $row['borda_score'] = $p_points + $a_points;
+        }
+        unset($row); // break reference
+
+        // 4. Sort $rows by borda_score descending
+        usort($rows, function($a, $b) {
+            return $b['borda_score'] <=> $a['borda_score'];
+        });
     }
 }
-
 ?>
 
 <br />
@@ -78,32 +145,17 @@ if ($exam_id > 0) {
             <div class="col-md-8">
                 <h3 class="panel-title">Aggregated Exam Results</h3>
             </div>
-            <div class="col-md-4 text-right">
-                <?php if ($exam_id > 0): ?>
-                    <a href="exam_result_agg.php?exam_id=<?php echo $exam_id; ?>&export=1" class="btn btn-sm btn-success">Export CSV</a>
-                <?php endif; ?>
-            </div>
         </div>
     </div>
     <div class="card-body">
-        <form class="form-inline mb-3" method="get">
-            <label class="mr-2" for="exam_id">Select Exam:</label>
-            <select name="exam_id" id="exam_id" class="form-control mr-2">
-                <option value="0">-- Select --</option>
-                <?php echo $exam->Fill_exam_list(); ?>
-            </select>
-            <button type="submit" class="btn btn-primary">Show</button>
-            <?php if ($exam_id > 0): ?><a href="exam_result_agg.php" class="btn btn-link ml-2">Clear</a><?php endif; ?>
-        </form>
-
-        <?php if ($exam_id == 0): ?>
-            <div class="alert alert-info">Please select an exam to view aggregated results. If you have not run the population SQL yet, results may be empty.</div>
-        <?php else: ?>
+        <?php if ($exam_id > 0): ?>
             <h5><?php echo htmlspecialchars($exam_title ?: 'Exam ID: '.$exam_id); ?></h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover" id="agg_result_table">
                     <thead>
                         <tr>
+                            <th>Rank</th>
+                            <th>Borda Score</th>
                             <th>Image</th>
                             <th>User Name</th>
                             <th>Attendance</th>
@@ -114,8 +166,22 @@ if ($exam_id > 0) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($rows as $r): ?>
+                        <?php
+                        $rank = 0;
+                        $prev_score = null;
+                        $skip_rank = 1;
+                        foreach ($rows as $r):
+                            if ($prev_score !== $r['borda_score']) {
+                                $rank += $skip_rank;
+                                $skip_rank = 1;
+                            } else {
+                                $skip_rank++;
+                            }
+                            $prev_score = $r['borda_score'];
+                        ?>
                             <tr>
+                                <td><?php echo $rank; ?></td>
+                                <td><?php echo htmlspecialchars($r['borda_score']); ?></td>
                                 <td style="width:60px; text-align:center;">
                                     <?php if (!empty($r['user_image'])): ?>
                                         <img src="../upload/<?php echo htmlspecialchars($r['user_image']); ?>" alt="" style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
@@ -141,14 +207,9 @@ if ($exam_id > 0) {
 <script>
 $(document).ready(function(){
     $('#agg_result_table').DataTable({
-        "order": [[3, 'desc']],
+        "order": [[0, 'asc']], // order by Rank ascending
         "pageLength": 25
     });
-    // Pre-select exam if provided
-    var sel = <?php echo json_encode($exam_id); ?>;
-    if (sel) {
-        $('#exam_id').val(sel);
-    }
 });
 </script>
 
