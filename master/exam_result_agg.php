@@ -83,29 +83,54 @@ if ($exam_id > 0) {
         ];
     }
 
-    // ========== Borda Count Rank Aggregation ==========
+    // ========== Borda Count Rank Aggregation Algorithm ==========
+    // 
+    // PURPOSE:
+    // Rank students fairly by combining two independent metrics:
+    // 1. Exam Performance (percentage scored)
+    // 2. Attendance (Present vs Absent)
+    //
+    // WHY BORDA COUNT?
+    // - Prevents single factor from dominating (e.g., high score but absent)
+    // - Balances academic performance with participation
+    // - Handles ties naturally (same score = same rank)
+    //
+    // ALGORITHM:
+    // 1. Create separate rankings for each metric
+    // 2. Assign points based on rank position: position 1 = n points, position 2 = n-1, ..., position n = 1
+    // 3. Sum points across all metrics
+    // 4. Final ranking by total Borda score (highest first)
+    //
+    // EXAMPLE (4 students):
+    //   Student | % | Attendance | Rank_% | Pts_% | Rank_Att | Pts_Att | Borda | Final_Rank
+    //   --------|---|------------|--------|-------|----------|---------|-------|----------
+    //   A       |95%| Present    |   1    |   4   |    1     |    4    |   8   |    1
+    //   B       |85%| Present    |   2    |   3   |    1     |    4    |   7   |    2
+    //   C       |75%| Absent     |   3    |   2   |    3     |    2    |   4   |    3
+    //   D       |65%| Absent     |   4    |   1   |    3     |    2    |   3   |    4
+    //
     if (count($rows) > 0) {
 
-        // 1. Rank by percentage descending
+        // ===== RANKING 1: By Percentage (Descending) =====
         $percentage_sorted = $rows;
         usort($percentage_sorted, function($a, $b) {
-            return $b['percentage'] <=> $a['percentage']; // descending
+            return $b['percentage'] <=> $a['percentage']; // descending: highest % first
         });
 
-        // Assign ranks and Borda points (highest rank gets n points)
+        // Assign Borda points: position 1 gets n points, position 2 gets n-1, etc.
         $n = count($percentage_sorted);
         $percentage_points = [];
         foreach ($percentage_sorted as $rank => $user) {
             $percentage_points[$user['user_id']] = $n - $rank;
         }
 
-        // 2. Rank by attendance (Present > Absent)
-        // Prepare attendance ranking: Present=1, Absent=2 (lower better)
+        // ===== RANKING 2: By Attendance (Present > Absent) =====
         $attendance_sorted = $rows;
         usort($attendance_sorted, function($a, $b) {
+            // Treat 'present' as 1, 'absent' as 2 so present comes first
             $valA = strtolower($a['attendance_status']) === 'present' ? 1 : 2;
             $valB = strtolower($b['attendance_status']) === 'present' ? 1 : 2;
-            return $valA <=> $valB; // ascending (present first)
+            return $valA <=> $valB; // ascending: present first
         });
 
         // Assign Borda points for attendance
@@ -114,7 +139,7 @@ if ($exam_id > 0) {
             $attendance_points[$user['user_id']] = $n - $rank;
         }
 
-        // 3. Sum points for each user
+        // ===== STEP 3: Sum Borda Points =====
         foreach ($rows as &$row) {
             $uid = $row['user_id'];
             $p_points = $percentage_points[$uid] ?? 0;
@@ -123,9 +148,9 @@ if ($exam_id > 0) {
         }
         unset($row); // break reference
 
-        // 4. Sort $rows by borda_score descending
+        // ===== STEP 4: Final Ranking by Borda Score =====
         usort($rows, function($a, $b) {
-            return $b['borda_score'] <=> $a['borda_score'];
+            return $b['borda_score'] <=> $a['borda_score']; // descending: highest score first
         });
     }
 }

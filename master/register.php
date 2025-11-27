@@ -57,9 +57,9 @@ $exam->admin_session_public();
                       <input type="submit" name="admin_register" id="admin_register" class="btn btn-info" value="Register" />
                     </div>
                   </form>
-          				<div align="center">
-          					<a href="login.php">Login</a>
-          				</div>
+                  <div align="center">
+                    <a href="http://localhost/new%20by%20sam/login.php">Login</a>
+                  </div>
         			</div>
       			</div>
     		</div>

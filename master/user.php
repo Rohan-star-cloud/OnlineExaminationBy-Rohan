@@ -12,9 +12,7 @@ include('header.php');
 			<div class="col-md-9">
 				<h3 class="panel-title">User List</h3>
 			</div>
-			<div class="col-md-3" align="right">
-				<button type="button" id="add_button" class="btn btn-info btn-sm">Add</button>
-			</div>
+			
 		</div>
 	</div>
 	<div class="card-body">

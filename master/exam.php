@@ -330,6 +330,11 @@ $(document).ready(function(){
 	$('#exam_form').on('submit', function(event){
 		event.preventDefault();
 
+		// Prevent double submit
+		if($('#button_action').prop('disabled')){
+			return false;
+		}
+
 		$('#online_exam_title').attr('required', 'required');
 
 		$('#online_exam_datetime').attr('required', 'required');

@@ -49,3 +49,367 @@ Stack trace:
   thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
 
 
+[2025-11-01 16:46:23] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"4"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\xat\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 D:\xat\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 D:\xat\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 D:\xat\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-01 16:46:26] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"4"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\xat\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 D:\xat\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 D:\xat\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 D:\xat\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-01 16:59:16] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"5"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\xat\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 D:\xat\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 D:\xat\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 D:\xat\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-01 16:59:19] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"5"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\xat\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 D:\xat\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 D:\xat\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 D:\xat\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-03 15:49:20] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"6"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\xat\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 D:\xat\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 D:\xat\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 D:\xat\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>D:\xat\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:28:53] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"1"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:28:58] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"1"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:29:16] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"2"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:32:01] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"3"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(384): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:57:21] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"3"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(282): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 07:58:51] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"4"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(282): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 08:15:18] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"7"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(282): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 08:15:20] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"7"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(282): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 08:19:08] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"5"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-12 08:23:15] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"8"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-15 08:55:42] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"1"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-15 08:59:52] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"3"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-23 07:05:59] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"7"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-23 07:06:06] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"4"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-23 07:06:11] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"2"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-23 07:07:56] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"11"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-25 07:15:04] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"12"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-27 09:33:54] Non-JSON response
+REQUEST: {"request":{"action":"enroll_exam","page":"index","exam_id":"7"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(119): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(300): Examination-&gt;query_result()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-27 09:57:41] Non-JSON response
+REQUEST: {"request":{"user_email_address":"user@gmail.com","user_password":"12345","page":"login","action":"login"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':user_email_address' at line 1 in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(65): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(125): Examination-&gt;total_row()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-27 09:59:01] Non-JSON response
+REQUEST: {"request":{"user_email_address":"user@gmail.com","user_password":"12345","page":"login","action":"login"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':user_email_address' at line 1 in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(65): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(125): Examination-&gt;total_row()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-27 10:01:00] Non-JSON response
+REQUEST: {"request":{"user_email_address":"user@gmail.com","user_password":"12345","page":"login","action":"login"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':user_email_address' at line 1 in C:\xampp\htdocs\new by sam\master\Examination.php:47
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(47): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(65): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(125): Examination-&gt;total_row()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>47</b><br />
+
+
+[2025-11-27 10:02:38] Non-JSON response
+REQUEST: {"request":{"user_email_address":"user@gmail.com","user_password":"12345","page":"login","action":"login"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':user_email_address' at line 1 in C:\xampp\htdocs\new by sam\master\Examination.php:53
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(53): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(69): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(125): Examination-&gt;total_row()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>53</b><br />
+
+
+[2025-11-27 10:03:19] Non-JSON response
+REQUEST: {"request":{"user_email_address":"user@gmail.com","user_password":"12345","page":"login","action":"login"}}
+RESPONSE:
+<br />
+<b>Fatal error</b>:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':user_email_address' at line 1 in C:\xampp\htdocs\new by sam\master\Examination.php:53
+Stack trace:
+#0 C:\xampp\htdocs\new by sam\master\Examination.php(53): PDOStatement-&gt;execute()
+#1 C:\xampp\htdocs\new by sam\master\Examination.php(69): Examination-&gt;execute_query()
+#2 C:\xampp\htdocs\new by sam\user_ajax_action.php(125): Examination-&gt;total_row()
+#3 {main}
+  thrown in <b>C:\xampp\htdocs\new by sam\master\Examination.php</b> on line <b>53</b><br />
+
+

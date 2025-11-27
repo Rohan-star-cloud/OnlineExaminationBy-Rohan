@@ -22,7 +22,8 @@ if (empty($exam_id) || empty($answers)) {
     exit;
 }
 
-// Enforce scheduling: only allow submission on the scheduled date for the exam
+// Scheduling-by-date removed for submissions: allow submit regardless of the scheduled date.
+// (We still validate exam existence below and will proceed to grading.)
 $exam->query = "SELECT online_exam_datetime FROM online_exam_table WHERE online_exam_id = :exam_id LIMIT 1";
 $exam->data = array(':exam_id' => $exam_id);
 $exam_info = $exam->query_result();
@@ -30,57 +31,8 @@ if (empty($exam_info)) {
     echo json_encode(['success' => false, 'message' => 'Exam not found']);
     exit;
 }
+// $scheduled_dt retained for informational purposes if needed later
 $scheduled_dt = $exam_info[0]['online_exam_datetime'];
-
-// Prefer IANA tz_name when provided (accurate across DST). Fallback to tz_offset, then server date.
-if (!empty($tz_name)) {
-    try {
-        // Assume stored scheduled datetime is in server timezone
-        $serverTz = new DateTimeZone(date_default_timezone_get());
-        $dt = new DateTime($scheduled_dt, $serverTz);
-        $userTz = new DateTimeZone($tz_name);
-        $dt->setTimezone($userTz);
-        $scheduled_local_date = $dt->format('Y-m-d');
-
-        $now = new DateTime('now', $userTz);
-        $current_date = $now->format('Y-m-d');
-
-        if ($scheduled_local_date !== $current_date) {
-            // If user's local date doesn't match, allow when server's scheduled date equals server current date
-            $server_scheduled_date = date('Y-m-d', strtotime($scheduled_dt));
-            if ($server_scheduled_date === date('Y-m-d')) {
-                // allow submission (use server date for display)
-                // no-op (proceed)
-            } else {
-                $readable = $dt->format('F j, Y');
-                echo json_encode(['success' => false, 'message' => 'This exam is scheduled for ' . $readable . '. You cannot submit now.']);
-                exit;
-            }
-        }
-    } catch (Exception $e) {
-        // invalid tz_name provided; fall through to next checks
-    }
-} 
-
-// If we reach here, either tz_name wasn't provided/valid, try tz_offset fallback
-if ($tz_offset !== null) {
-    // compute user's local dates using offset (minutes)
-    $user_now_ts = time() - ($tz_offset * 60);
-    $current_date = date('Y-m-d', $user_now_ts);
-    $scheduled_local_date = date('Y-m-d', strtotime($scheduled_dt) - ($tz_offset * 60));
-    if ($scheduled_local_date !== $current_date) {
-        echo json_encode(['success' => false, 'message' => 'This exam is scheduled for ' . date('F j, Y', strtotime($scheduled_local_date)) . '. You cannot submit now.']);
-        exit;
-    }
-} else {
-    // Last resort: compare server-local dates
-    $scheduled_date = date('Y-m-d', strtotime($scheduled_dt));
-    $current_date = date('Y-m-d');
-    if ($scheduled_date !== $current_date) {
-        echo json_encode(['success' => false, 'message' => 'This exam is scheduled for ' . date('F j, Y', strtotime($scheduled_date)) . '. You cannot submit now.']);
-        exit;
-    }
-}
 
 try {
     // Get correct answers from database
@@ -135,33 +87,27 @@ try {
     ";
     $exam->execute_query();
 
-    // Update or insert aggregated results
+    // Update or insert aggregated results in user_exam_result table
     $exam->query = "
         INSERT INTO user_exam_result 
-        (exam_id, user_id, total_mark, total_possible, percentage, attendance_status, created_on, updated_on)
+        (user_id, exam_id, marks_obtained, total_marks, exam_status)
         VALUES (
-            :exam_id,
             :user_id,
-            :total_mark,
-            :total_possible,
-            :percentage,
-            'Present',
-            NOW(),
-            NOW()
+            :exam_id,
+            :marks_obtained,
+            :total_marks,
+            'Completed'
         )
         ON DUPLICATE KEY UPDATE
-            total_mark = VALUES(total_mark),
-            total_possible = VALUES(total_possible),
-            percentage = VALUES(percentage),
-            attendance_status = VALUES(attendance_status),
-            updated_on = VALUES(updated_on)
+            marks_obtained = VALUES(marks_obtained),
+            total_marks = VALUES(total_marks),
+            exam_status = VALUES(exam_status)
     ";
     $exam->data = array(
-        ':exam_id' => $exam_id,
         ':user_id' => $_SESSION['user_id'],
-        ':total_mark' => $total_marks,
-        ':total_possible' => $total_questions,
-        ':percentage' => round($percentage, 2)
+        ':exam_id' => $exam_id,
+        ':marks_obtained' => $total_marks,
+        ':total_marks' => $total_questions
     );
     $exam->execute_query();
     

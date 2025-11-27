@@ -26,10 +26,9 @@ if (!$exam_id) {
     exit;
 }
 
-// Check if exam is available (today)
-$current_date = date('Y-m-d');
-$exam_date = isset($result[0]['online_exam_datetime']) ? date('Y-m-d', strtotime($result[0]['online_exam_datetime'])) : '';
-$can_take = ($exam_date === $current_date);
+// Previously this file blocked access unless the exam was scheduled for the current date.
+// Modify behavior: allow taking the exam for enrolled users regardless of the scheduled date.
+$can_take = true;
 
 ?>
 <!DOCTYPE html>

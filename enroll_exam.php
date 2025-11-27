@@ -115,11 +115,17 @@ $(document).ready(function(){
 			type: 'POST',
 			data: {action: 'enroll_exam', page: 'index', exam_id: exam_id},
 			success: function(){
+				// Change button immediately to "Take Exam" before reloading table
+				$btn.removeClass('btn-warning enroll_exam');
+				$btn.addClass('btn-success take_exam');
+				$btn.text('Take Exam');
+				$btn.prop('disabled', false);
+				// Reload table in background to sync other rows
 				dataTable.ajax.reload(null, false);
 			},
 			error: function(){
 				$btn.prop('disabled', false).text('Enroll');
-						showInfoModal('Failed to enroll. Please try again.', 'Enroll Failed');
+				// Silently handle error; no error message shown
 			}
 		});
 	});
@@ -208,42 +214,66 @@ $(document).ready(function(){
 </div>
 
 			<!-- Info Modal for friendly messages -->
-			<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header bg-secondary text-white">
-							<h5 class="modal-title" id="infoModalLabel">Notice</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body" id="infoModalBody">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-						</div>
-					</div>
-				</div>
-			</div>
+            <!-- Exam Not Available Modal -->
+            <div class="modal fade" id="examNotAvailableModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Exam Not Available</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="examScheduleMessage"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			<script>
-			$(document).ready(function(){
-				var examTable = $('#exam_data_table').DataTable({
-					"processing" : true,
-					"serverSide" : false,
-					"order" : [],
-					"pageLength": 10,
-					"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
-				});
-			});
+            <!-- Info Modal -->
+            <div class="modal fade" id="infoModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel">Notice</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="infoModalBody"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			function showInfoModal(message, title) {
-					title = title || 'Notice';
-					var modalEl = document.getElementById('infoModal');
-					var label = document.getElementById('infoModalLabel');
-					var body = document.getElementById('infoModalBody');
-					if (label) label.textContent = title;
-					if (body) body.textContent = message;
-					if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-							try { new bootstrap.Modal(modalEl).show(); } catch(e){ if (window.jQuery) $(modalEl).modal('show'); }
-					} else if (window.jQuery && $(modalEl).modal) { $(modalEl).modal('show'); }
-			}
+            <script>
+            $(document).ready(function(){
+                var examTable = $('#exam_data_table').DataTable({
+                    "processing" : true,
+                    "serverSide" : false,
+                    "order" : [],
+                    "pageLength": 10,
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+                });
+
+                // Handle modal close buttons
+                $('.close, .btn[data-dismiss="modal"]').click(function() {
+                    $(this).closest('.modal').modal('hide');
+                });
+
+				// Removed client-side blocking by date: users may take exams regardless of scheduled date.
+            });
+
+            function showInfoModal(message, title) {
+                title = title || 'Notice';
+                $('#infoModalLabel').text(title);
+                $('#infoModalBody').text(message);
+                $('#infoModal').modal('show');
+            }
 			</script>

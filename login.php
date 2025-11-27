@@ -51,7 +51,7 @@ include('header.php');
                   </div>
                 </form>
                 <div align="center">
-                  <a href="register.php">Register</a>
+                  <a href="http://localhost/new%20by%20sam/register.php">Register</a>
                 </div>
               </div>
             </div>
@@ -96,14 +96,21 @@ $(document).ready(function(){
           if(data.success)
           {
             location.href='index.php';
+            return;
           }
-          else
-          {
-            $('#message').html('<div class="alert alert-danger">'+data.error+'</div>');
-          }
-
+          $('#message').html('<div class="alert alert-danger">'+(data.error ?? 'Login failed')+'</div>');
+        },
+        error: function(xhr, status, error) {
+          var msg = 'Server error. Please try again.';
+          try {
+            var json = JSON.parse(xhr.responseText);
+            if (json && json.error) msg = json.error;
+          } catch (e) {}
+          $('#message').html('<div class="alert alert-danger">'+msg+'</div>');
+        },
+        complete: function() {
+          // always re-enable the button
           $('#user_login').attr('disabled', false);
-
           $('#user_login').val('Login');
         }
       })

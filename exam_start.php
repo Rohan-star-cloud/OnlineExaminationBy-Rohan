@@ -31,65 +31,14 @@ try {
 $questions = array();
 $allow_start = false;
 $scheduled_date = '';
+// Permit starting the exam regardless of the scheduled date. Keep scheduled_date for display.
 if (!empty($exam_result)) {
     $scheduled = $exam_result[0]['online_exam_datetime'];
-
-    // Prefer IANA tz_name when provided
-    if (!empty($tz_name)) {
-        try {
-            $serverTz = new DateTimeZone(date_default_timezone_get());
-            $dt = new DateTime($scheduled, $serverTz);
-            $userTz = new DateTimeZone($tz_name);
-            $dt->setTimezone($userTz);
-            $scheduled_local_date = $dt->format('Y-m-d');
-
-            $now = new DateTime('now', $userTz);
-            $current_date = $now->format('Y-m-d');
-
-            if ($scheduled_local_date === $current_date) {
-                $allow_start = true;
-            }
-
-            // store human-readable scheduled_date for display
-            $scheduled_date = $dt->format('Y-m-d');
-        } catch (Exception $e) {
-            // invalid tz_name — fall back to other checks
-            $tz_name = null;
-        }
-    }
-
-    if (!$allow_start) {
-        // fallback to tz_offset if provided
-        if ($tz_offset !== null) {
-            $user_now_ts = time() - ($tz_offset * 60);
-            $current_date = date('Y-m-d', $user_now_ts);
-
-            $scheduled_ts = strtotime($scheduled);
-            $scheduled_local_date = date('Y-m-d', $scheduled_ts - ($tz_offset * 60));
-
-            if ($scheduled_local_date === $current_date) {
-                $allow_start = true;
-            }
-            $scheduled_date = $scheduled_local_date;
-        } else {
-            // last resort: server-local date
-            $scheduled_date = date('Y-m-d', strtotime($scheduled));
-            $current_date = date('Y-m-d');
-            if ($scheduled_date === $current_date) {
-                $allow_start = true;
-            }
-        }
-    }
-}
-
-// If user's timezone check didn't allow start, also allow when the server-side scheduled date equals server's current date
-if (!$allow_start && !empty($scheduled)) {
-    $server_scheduled_date = date('Y-m-d', strtotime($scheduled));
-    $server_current_date = date('Y-m-d');
-    if ($server_scheduled_date === $server_current_date) {
+    $scheduled_date = date('Y-m-d', strtotime($scheduled));
+    // Only prevent start if exam explicitly marked inactive in DB (if such a status exists)
+    $exam_status = isset($exam_result[0]['online_exam_status']) ? $exam_result[0]['online_exam_status'] : '';
+    if (strtolower($exam_status) !== 'inactive') {
         $allow_start = true;
-        // prefer showing the server-local scheduled date
-        $scheduled_date = $server_scheduled_date;
     }
 }
 
@@ -118,7 +67,11 @@ if ($allow_start) {
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Online Examination</h3>
-            <div>
+            <div class="d-flex align-items-center gap-3">
+                <div id="timerDisplay" class="alert alert-light mb-0 px-3 py-2" style="min-width: 150px; text-align: center; border-radius: 5px;">
+                    <strong id="timerText" style="font-size: 1.1em; color: #333;">00:00:00</strong>
+                    <div style="font-size: 0.85em; color: #666;">Time Remaining</div>
+                </div>
                 <button type="button" id="shuffleBtn" class="btn btn-warning me-2">
                     Shuffle Questions
                 </button>
@@ -130,6 +83,7 @@ if ($allow_start) {
         <div class="card-body">
             <form action="exam_result.php" method="POST" id="examForm">
                 <input type="hidden" name="exam_id" value="<?php echo htmlspecialchars($exam_id); ?>">
+                <input type="hidden" id="examDuration" value="<?php echo isset($exam_result[0]['online_exam_duration']) ? intval($exam_result[0]['online_exam_duration']) : 60; ?>">
 
                 <div id="questionsContainer">
                     <?php
@@ -216,6 +170,52 @@ body { background: #f7f9fb; }
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Timer functionality
+    const examDurationMinutes = parseInt(document.getElementById('examDuration').value) || 60;
+    const examDurationSeconds = examDurationMinutes * 60;
+    let timeRemaining = examDurationSeconds;
+    const timerDisplay = document.getElementById('timerText');
+    const timerContainer = document.getElementById('timerDisplay');
+    const warningThreshold = 5 * 60; // 5 minutes in seconds
+    let warningShown = false;
+
+    function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function updateTimer() {
+        timerDisplay.textContent = formatTime(timeRemaining);
+
+        // 5-minute warning
+        if (timeRemaining <= warningThreshold && !warningShown) {
+            warningShown = true;
+            timerContainer.classList.remove('alert-light');
+            timerContainer.classList.add('alert-warning');
+            alert('⏰ Warning: Only 5 minutes remaining! Please complete your exam.');
+        }
+
+        // Time's up
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            timerContainer.classList.remove('alert-light', 'alert-warning');
+            timerContainer.classList.add('alert-danger');
+            timerDisplay.textContent = 'TIME UP!';
+            alert('⏱️ Time is up! Your exam will be submitted automatically.');
+            // Auto-submit the form
+            document.getElementById('examForm').submit();
+            return;
+        }
+
+        timeRemaining--;
+    }
+
+    // Update timer immediately and then every second
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
     const shuffleBtn = document.getElementById('shuffleBtn');
     const container = document.getElementById('questionsContainer');
 

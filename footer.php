@@ -28,8 +28,8 @@ if (isset($_SESSION['user_id'])) {
     <div class="footer-col">
       <h4>Quick Links</h4>
       <nav class="footer-links" aria-label="Footer navigation">
-        <a href="login.php">Login</a>
-        <a href="register.php">Register</a>
+        <a href="http://localhost/new%20by%20sam/login.php">Login</a>
+        <a href="http://localhost/finalproject/old/rohan/register.php">Register</a>
         <a href="exam.php">Browse Exams</a>
         <a href="#about">About</a>
       </nav>

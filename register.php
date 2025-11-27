@@ -1,14 +1,9 @@
 <?php
+// register.php (user-facing) - redirect users to the legacy registration location
+header('Location: http://localhost/finalproject/old/rohan/register.php');
+exit();
 
-//register.php
-
-include('master/Examination.php');
-
-$exam = new Examination;
-
-$exam->user_session_public();
-
-include('header.php');
+// Note: admin registration remains at master/register.php
 
 ?>
 
@@ -62,9 +57,9 @@ include('header.php');
                     <input type="submit" name="user_register" id="user_register" class="btn btn-info" value="Register" />
                   </div>
                 </form>
-          			<div align="center">
-          				<a href="login.php">Login</a>
-          			</div>
+          		<div align="center">
+            			<a href="http://localhost/new%20by%20sam/login.php">Login</a>
+            		</div>
         		</div>
       		</div>
       		<br /><br />

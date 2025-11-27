@@ -16,6 +16,7 @@ if ($current_script === '') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/guillaumepotier/Parsley.js@2.9.1/dist/parsley.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -41,7 +42,6 @@ if ($current_script === '') {
             <a class="btn secondary <?php echo ($current_script === 'examination_center.php') ? 'active' : ''; ?>" href="examination_center.php">Exam Center</a>
             <a class="btn secondary <?php echo ($current_script === 'enroll_exam.php') ? 'active' : ''; ?>" href="enroll_exam.php">Enroll Exam</a>
             <a class="btn secondary <?php echo ($current_script === 'profile.php') ? 'active' : ''; ?>" href="profile.php">Profile</a>
-            <a class="btn secondary <?php echo ($current_script === 'change_password.php') ? 'active' : ''; ?>" href="change_password.php">Change Password</a>
             <a class="btn" href="logout.php">Logout</a>
         </nav>
     </header>
@@ -56,8 +56,8 @@ if ($current_script === '') {
             <a class="btn secondary <?php echo ($current_script === 'examination_center.php') ? 'active' : ''; ?>" href="examination_center.php">Exam Center</a>
             <a class="btn secondary" href="#about">About</a>
             <a class="btn secondary" href="#uses">Features</a>
-            <a class="btn <?php echo ($current_script === 'login.php') ? 'active' : ''; ?>" href="login.php">Login</a>
-            <a class="btn <?php echo ($current_script === 'register.php') ? 'active' : ''; ?>" href="register.php">Register</a>
+            <a class="btn <?php echo ($current_script === 'login.php') ? 'active' : ''; ?>" href="http://localhost/new%20by%20sam/login.php">Login</a>
+            <a class="btn <?php echo ($current_script === 'register.php') ? 'active' : ''; ?>" href="http://localhost/finalproject/old/rohan/register.php">Register</a>
         </nav>
     </header>
 <?php endif; ?>

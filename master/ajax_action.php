@@ -89,12 +89,11 @@ if(isset($_POST['page']))
 			WHERE admin_email_address = :admin_email_address
 			";
 
-			$total_row = $exam->total_row();
+			// Execute once and inspect the returned rows to avoid re-executing the prepared
+			$result = $exam->query_result();
 
-			if($total_row > 0)
+			if(count($result) > 0)
 			{
-				$result = $exam->query_result();
-
 				foreach($result as $row)
 				{
 					if($row['email_verified'] == 'yes')
@@ -255,18 +254,12 @@ if(isset($_POST['page']))
 					$result_button = '<a href="exam_result.php?code='.$row["online_exam_code"].'" class="btn btn-dark btn-sm">Result</a>';
 				}
 
-				if($exam->Is_allowed_add_question($row['online_exam_id']))
-				{
-					$question_button = '
+				// Allow admins to always add questions (show both Add and View).
+				// Previously Add was hidden when the exam reached its total_question limit.
+				$question_button = '
 					<button type="button" name="add_question" class="btn btn-info btn-sm add_question" id="'.$row['online_exam_id'].'">Add Question</button>
-					';
-				}
-				else
-				{
-					$question_button = '
-					<a href="question.php?code='.$row['online_exam_code'].'" class="btn btn-warning btn-sm">View Question</a>
-					';
-				}
+					<a href="question.php?code='.$row['online_exam_code'].'" class="btn btn-warning btn-sm ms-1">View Question</a>
+				';
 
 				$sub_array[] = $status;
 
@@ -292,32 +285,65 @@ if(isset($_POST['page']))
 
 		if($_POST['action'] == 'Add')
 		{
-			$exam->data = array(
-				':admin_id'				=>	$_SESSION['admin_id'],
-				':online_exam_title'	=>	$exam->clean_data($_POST['online_exam_title']),
-				':online_exam_datetime'	=>	$_POST['online_exam_datetime'] . ':00',
-				':online_exam_duration'	=>	$_POST['online_exam_duration'],
-				':total_question'		=>	$_POST['total_question'],
-				':marks_per_right_answer'=>	$_POST['marks_per_right_answer'],
-				':marks_per_wrong_answer'=>	$_POST['marks_per_wrong_answer'],
-				':online_exam_created_on'=>	$current_datetime,
-				':online_exam_status'	=>	'Pending',
-				':online_exam_code'		=>	md5(rand())
-			);
+			try {
+				$title = $exam->clean_data($_POST['online_exam_title']);
+				$datetime = $_POST['online_exam_datetime'] . ':00';
+				$admin_id = $_SESSION['admin_id'];
 
-			$exam->query = "
-			INSERT INTO online_exam_table 
-			(admin_id, online_exam_title, online_exam_datetime, online_exam_duration, total_question, marks_per_right_answer, marks_per_wrong_answer, online_exam_created_on, online_exam_status, online_exam_code) 
-			VALUES (:admin_id, :online_exam_title, :online_exam_datetime, :online_exam_duration, :total_question, :marks_per_right_answer, :marks_per_wrong_answer, :online_exam_created_on, :online_exam_status, :online_exam_code)
-			";
+				// Check if same exam already exists (prevent duplicates within seconds)
+				$exam->query = "
+				SELECT * FROM online_exam_table 
+				WHERE admin_id = :admin_id 
+				AND online_exam_title = :title 
+				AND online_exam_datetime = :datetime
+				LIMIT 1
+				";
+				$exam->data = array(
+					':admin_id' => $admin_id,
+					':title' => $title,
+					':datetime' => $datetime
+				);
+				$existing = $exam->query_result();
 
-			$exam->execute_query();
+				if (!empty($existing)) {
+					// Duplicate exam, return existing one
+					echo json_encode(array(
+						'success' => 'New Exam Details Added'
+					));
+					exit;
+				}
 
-			$output = array(
-				'success'	=>	'New Exam Details Added'
-			);
+				$exam->data = array(
+					':admin_id'				=>	$admin_id,
+					':online_exam_title'	=>	$title,
+					':online_exam_datetime'	=>	$datetime,
+					':online_exam_duration'	=>	$_POST['online_exam_duration'],
+					':total_question'		=>	$_POST['total_question'],
+					':marks_per_right_answer'=>	$_POST['marks_per_right_answer'],
+					':marks_per_wrong_answer'=>	$_POST['marks_per_wrong_answer'],
+					':online_exam_created_on'=>	$current_datetime,
+					':online_exam_status'	=>	'Pending',
+					':online_exam_code'		=>	md5(rand())
+				);
 
-			echo json_encode($output);
+				$exam->query = "
+				INSERT INTO online_exam_table 
+				(admin_id, online_exam_title, online_exam_datetime, online_exam_duration, total_question, marks_per_right_answer, marks_per_wrong_answer, online_exam_created_on, online_exam_status, online_exam_code) 
+				VALUES (:admin_id, :online_exam_title, :online_exam_datetime, :online_exam_duration, :total_question, :marks_per_right_answer, :marks_per_wrong_answer, :online_exam_created_on, :online_exam_status, :online_exam_code)
+				";
+
+				$exam->execute_query();
+
+				$output = array(
+					'success'	=>	'New Exam Details Added'
+				);
+
+				echo json_encode($output);
+			} catch (Exception $e) {
+				echo json_encode(array(
+					'error' => 'Failed to add exam: ' . $e->getMessage()
+				));
+			}
 		}
 
 		if($_POST['action'] == 'edit_fetch')
