@@ -42,6 +42,11 @@ if ($current_script === '') {
             <a class="btn secondary <?php echo ($current_script === 'examination_center.php') ? 'active' : ''; ?>" href="examination_center.php">Exam Center</a>
             <a class="btn secondary <?php echo ($current_script === 'enroll_exam.php') ? 'active' : ''; ?>" href="enroll_exam.php">Enroll Exam</a>
             <a class="btn secondary <?php echo ($current_script === 'profile.php') ? 'active' : ''; ?>" href="profile.php">Profile</a>
+    <a class="btn secondary <?php echo ($current_script === 'user_quizzes.php') ? 'active' : ''; ?>" 
+   href="http://localhost/new%20by%20sam/master/Quiz%20Folder/user/user_quizzes.php">
+   Short Quiz
+</a>
+
             <a class="btn" href="logout.php">Logout</a>
         </nav>
     </header>

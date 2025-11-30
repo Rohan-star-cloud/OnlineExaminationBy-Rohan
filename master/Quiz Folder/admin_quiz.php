@@ -25,9 +25,12 @@ require_once 'db_connection.php';
         <?php endif; ?>
         
         <!-- Navigation -->
-        <div class="mb-3">
-            <a href="user_quizzes.php" class="btn btn-outline-primary">View User Quizzes</a>
-        </div>
+      <div class="mb-3">
+    <a href="http://localhost/new%20by%20sam/master/index.php" class="btn btn-outline-primary">
+        Dashboard
+    </a>
+</div>
+
         
         <!-- Create Quiz Button -->
         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createQuizModal">

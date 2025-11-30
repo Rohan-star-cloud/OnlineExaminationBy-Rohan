@@ -14,6 +14,11 @@ require_once './db_connection.php';
 </head>
 <body>
     <div class="container mt-4">
+
+      <a href="http://localhost/new%20by%20sam/index.php" class="btn btn-primary btn-lg">
+    Home
+</a>
+
         <h2>Available Quizzes</h2>
         
         <!-- Display messages -->

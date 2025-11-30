@@ -81,7 +81,10 @@ $exam->admin_session_private();
             <a href="exam.php"><i class="fas fa-file-alt"></i> Exams</a>
             <a href="user.php"><i class="fas fa-users"></i> Users</a>
             <a href="exam_result_agg.php"><i class="fas fa-chart-line"></i> Results</a>
-            <span class="nav-link disabled text-muted"><i class="fas fa-cog"></i> Settings</span>
+          <a class="nav-link" href="http://localhost/new%20by%20sam/master/Quiz%20Folder/admin_quiz.php">
+    <i class="fas fa-cog"></i> Cms
+</a>
+
             <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
 
