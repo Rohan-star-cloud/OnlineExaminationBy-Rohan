@@ -1,4 +1,4 @@
-<?php
+<?php 
 include_once 'header.php';
 include_once('master/Examination.php');
 $exam = new Examination;
@@ -102,10 +102,6 @@ if (empty($existing_result)) {
 }
 $exam->execute_query();
 
-// Note: Results are stored in user_exam_result table (marks_obtained, total_marks columns)
-// The user_exam_result table does not exist in the database schema
-// Results are calculated from the user_exam_question_answer records
-
 // Performance feedback
 if ($score_percent >= 90) {
     $performance = "Outstanding";
@@ -143,13 +139,13 @@ SELECT
     uer.*,
     oet.online_exam_title,
     oet.online_exam_code,
-    ROUND((uer.marks_obtained / uer.total_marks * 100), 2) as percentage,
-    RANK() OVER (ORDER BY (uer.marks_obtained / uer.total_marks) DESC, uer.marks_obtained DESC) as performance_rank,
+    ROUND(CASE WHEN uer.total_marks > 0 THEN (uer.marks_obtained / uer.total_marks * 100) ELSE 0 END, 2) as percentage,
+    RANK() OVER (ORDER BY (CASE WHEN uer.total_marks > 0 THEN uer.marks_obtained / uer.total_marks ELSE 0 END) DESC, uer.marks_obtained DESC) as performance_rank,
     COUNT(*) OVER () as total_exams_taken
 FROM user_exam_result uer
 JOIN online_exam_table oet ON uer.exam_id = oet.online_exam_id
 WHERE uer.user_id = '$user_id'
-ORDER BY (uer.marks_obtained / uer.total_marks) DESC, uer.marks_obtained DESC
+ORDER BY (CASE WHEN uer.total_marks > 0 THEN uer.marks_obtained / uer.total_marks ELSE 0 END) DESC, uer.marks_obtained DESC
 ";
 $past_attempts = $exam->query_result();
 
@@ -162,7 +158,11 @@ $lowest_percentage = 100;
 if ($total_past_attempts > 0) {
     $total_percentage = 0;
     foreach ($past_attempts as $attempt) {
-        $percentage = round(($attempt['marks_obtained'] / $attempt['total_marks'] * 100), 2);
+        if (isset($attempt['total_marks']) && $attempt['total_marks'] > 0) {
+            $percentage = round(($attempt['marks_obtained'] / $attempt['total_marks'] * 100), 2);
+        } else {
+            $percentage = 0;
+        }
         $total_percentage += $percentage;
         if ($percentage > $highest_percentage) $highest_percentage = $percentage;
         if ($percentage < $lowest_percentage) $lowest_percentage = $percentage;
@@ -281,7 +281,11 @@ if ($total_past_attempts > 0) {
                     </thead>
                     <tbody>
                         <?php foreach ($past_attempts as $attempt): 
-                            $attempt_percentage = round(($attempt['marks_obtained'] / $attempt['total_marks'] * 100), 2);
+                            if (isset($attempt['total_marks']) && $attempt['total_marks'] > 0) {
+                                $attempt_percentage = round(($attempt['marks_obtained'] / $attempt['total_marks'] * 100), 2);
+                            } else {
+                                $attempt_percentage = 0;
+                            }
                             $current_exam_class = ($attempt['exam_id'] == $exam_id) ? 'table-success' : '';
                             $rank_class = '';
                             if ($attempt['performance_rank'] == 1) $rank_class = 'bg-warning text-dark';
